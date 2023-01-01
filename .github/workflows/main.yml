@@ -1,0 +1,120 @@
+name: Models  
+on: [push]
+jobs:
+  deploy_source:
+    name: Deploy API Using Lambda
+    strategy:
+      matrix:
+        node-version: [12.x]
+    runs-on: ubuntu-latest
+    steps:
+    
+      - uses: actions/checkout@v1
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node-version }}
+      - name: npm install and build
+        run: |
+          npm ci
+          npm run build --if-present
+        env:
+          CI: true
+
+      - name: /models get lambda deploy zip
+        uses: kinlane/models@main
+        with:
+            args: zip -qq -r m-s-models-g.zip models/get/index.js node_modules
+      - name: model get lambda deploy
+        uses: appleboy/lambda-action@master
+        with:
+            aws_access_key_id: ${{secrets.AWS_ACCESS_KEY_ID}}
+            aws_secret_access_key: ${{secrets.AWS_SECRET_ACCESS_KEY}}
+            aws_region: us-east-1
+            function_name: m-s-models-g
+            zip_file: m-s-models-g.zip
+      - name: /models post lambda deploy zip
+        uses: kinlane/models@main
+        with:
+            args: zip -qq -r m-s-models-po.zip models/post/index.js node_modules
+      - name: model get lambda deploy
+        uses: appleboy/lambda-action@master
+        with:
+            aws_access_key_id: ${{secrets.AWS_ACCESS_KEY_ID}}
+            aws_secret_access_key: ${{secrets.AWS_SECRET_ACCESS_KEY}}
+            aws_region: us-east-1
+            function_name: m-s-models-po
+            zip_file: m-s-models-po.zip
+      - name: /models/{model_id} get lambda deploy zip
+        uses: kinlane/models@main
+        with:
+            args: zip -qq -r m-s-models-model-g.zip models/model_id/get/index.js node_modules
+      - name: model get lambda deploy
+        uses: appleboy/lambda-action@master
+        with:
+            aws_access_key_id: ${{secrets.AWS_ACCESS_KEY_ID}}
+            aws_secret_access_key: ${{secrets.AWS_SECRET_ACCESS_KEY}}
+            aws_region: us-east-1
+            function_name: m-s-models-model-g
+            zip_file: m-s-models-model-g.zip
+      - name: /models/{model_id} put lambda deploy zip
+        uses: kinlane/models@main
+        with:
+            args: zip -qq -r m-s-models-model-pu.zip models/model_id/put/index.js node_modules
+      - name: model get lambda deploy
+        uses: appleboy/lambda-action@master
+        with:
+            aws_access_key_id: ${{secrets.AWS_ACCESS_KEY_ID}}
+            aws_secret_access_key: ${{secrets.AWS_SECRET_ACCESS_KEY}}
+            aws_region: us-east-1
+            function_name: m-s-models-model-pu
+            zip_file: m-s-models-model-pu.zip
+      - name: /models/{model_id} delete lambda deploy zip
+        uses: kinlane/models@main
+        with:
+            args: zip -qq -r m-s-models-model-d.zip models/model_id/delete/index.js node_modules
+      - name: model get lambda deploy
+        uses: appleboy/lambda-action@master
+        with:
+            aws_access_key_id: ${{secrets.AWS_ACCESS_KEY_ID}}
+            aws_secret_access_key: ${{secrets.AWS_SECRET_ACCESS_KEY}}
+            aws_region: us-east-1
+            function_name: m-s-models-model-d
+            zip_file: m-s-models-model-d.zip          
+      - name: /models/{model_id}/tags get lambda deploy zip
+        uses: kinlane/models@main
+        with:
+            args: zip -qq -r m-s-models-model-tags-g.zip models/model_id/tags/get/index.js node_modules
+      - name: models get lambda deploy
+        uses: appleboy/lambda-action@master
+        with:
+            aws_access_key_id: ${{secrets.AWS_ACCESS_KEY_ID}}
+            aws_secret_access_key: ${{secrets.AWS_SECRET_ACCESS_KEY}}
+            aws_region: us-east-1
+            function_name: m-s-models-model-tags-g
+            zip_file: m-s-models-model-tags-g.zip
+      - name: /models/{model_id}/tags post lambda deploy zip
+        uses: kinlane/models@main
+        with:
+            args: zip -qq -r m-s-models-model-tags-po.zip models/model_id/tags/post/index.js node_modules
+      - name: models get lambda deploy
+        uses: appleboy/lambda-action@master
+        with:
+            aws_access_key_id: ${{secrets.AWS_ACCESS_KEY_ID}}
+            aws_secret_access_key: ${{secrets.AWS_SECRET_ACCESS_KEY}}
+            aws_region: us-east-1
+            function_name: m-s-models-model-tags-po
+            zip_file: m-s-models-model-tags-po.zip
+      - name: /models/bookmarklet get lambda deploy zip
+        uses: kinlane/models@main
+        with:
+            args: zip -qq -r m-s-modelsbookmarklet-g.zip models/bookmarklet/get/index.js node_modules
+      - name: models get lambda deploy
+        uses: appleboy/lambda-action@master
+        with:
+            aws_access_key_id: ${{secrets.AWS_ACCESS_KEY_ID}}
+            aws_secret_access_key: ${{secrets.AWS_SECRET_ACCESS_KEY}}
+            aws_region: us-east-1
+            function_name: m-s-modelsbookmarklet-g
+            zip_file: m-s-modelsbookmarklet-g.zip  
+                      

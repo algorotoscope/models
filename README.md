@@ -1,2 +1,2 @@
-# models
-This is an API for managing models.
+# Links
+These are the links that matter right now.
